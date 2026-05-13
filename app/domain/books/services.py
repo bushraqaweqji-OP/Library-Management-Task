@@ -1,12 +1,12 @@
 from app.domain.books.entities import Book
 from app.infrastructure.persistence.repositories.sqlalchemy_book_repository import BookRepository
 from app.infrastructure.persistence.repositories.sqlalchemy_member_repository import MemberRepository
-from app.shared.exceptions import (
+from app.domain.books.exceptions import (
     BookNotFoundException,
-    MemberNotFoundException,
     BookNotBorrowedException
 )
 
+from app.domain.members.exceptions import MemberNotFoundException
 
 class BookService:
 
@@ -20,23 +20,7 @@ class BookService:
         if not member:
             raise MemberNotFoundException()
 
-        domain_book = Book(
-            id=book.book_id,
-            title=book.title,
-            author=book.author,
-            is_borrowed=book.is_borrowed,
-            borrowed_by=book.borrowed_by,
-            borrowed_date=book.borrowed_date,
-        )
-        domain_book.borrow(member_id)
-
-        book.is_borrowed = domain_book.is_borrowed
-        book.borrowed_by = domain_book.borrowed_by
-        book.borrowed_date = domain_book.borrowed_date
-
-        db.commit()
-        db.refresh(book)
-        return book
+        return BookRepository.borrow(db, book, member_id)
 
     @staticmethod
     def return_book(db, book_id, current_user):
@@ -47,20 +31,15 @@ class BookService:
         if not book.is_borrowed:
             raise BookNotBorrowedException()
 
-        domain_book = Book(
-            id=book.book_id,
-            title=book.title,
-            author=book.author,
-            is_borrowed=book.is_borrowed,
-            borrowed_by=book.borrowed_by,
-            borrowed_date=book.borrowed_date,
-        )
-        domain_book.return_book(current_user.member_id)
+        return BookRepository.return_book(db, book, current_user)
 
-        book.is_borrowed = domain_book.is_borrowed
-        book.borrowed_by = domain_book.borrowed_by
-        book.borrowed_date = domain_book.borrowed_date
+    @staticmethod
+    def update_book(db, book_id, book_data):
+        book = BookRepository.get_by_id(db, book_id)
+        if not book:
+            return None
 
-        db.commit()
-        db.refresh(book)
-        return book
+        if book.is_borrowed:
+            raise Exception("Cannot edit borrowed book")
+
+        return BookRepository.update(db, book, book_data)

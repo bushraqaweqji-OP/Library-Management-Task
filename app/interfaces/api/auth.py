@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.interfaces.dependencies import get_db
 from app.interfaces.schemas.auth import TokenResponse
 from app.application.auth import authenticate_user
-from app.shared.exceptions import InvalidCredentialsException
+from app.domain.auth.exceptions import InvalidCredentialsException
 
 router = APIRouter(
     prefix="/auth",

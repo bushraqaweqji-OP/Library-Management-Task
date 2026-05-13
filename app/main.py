@@ -7,13 +7,15 @@ from app.interfaces.api.auth import router as auth_router
 from app.interfaces.api.books import router as book_router
 from app.interfaces.api.members import router as member_router
 
-from app.shared.exceptions import (
+from app.domain.books.exceptions import (
     BookNotFoundException,
-    MemberNotFoundException,
-    EmailAlreadyExistsException,
     BookAlreadyBorrowedException,
     WrongReturnBookException
 )
+
+from app.domain.members.exceptions import MemberNotFoundException
+
+from app.domain.auth.exceptions import EmailAlreadyExistsException
 
 
 app = FastAPI(

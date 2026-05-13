@@ -15,6 +15,23 @@ class MemberRepository:
         return member
 
     @staticmethod
+    def delete(db: Session, member_id: str):
+        """
+        Deletes a member record from the database by its ID.
+        """
+        member = db.query(Member).filter(
+            Member.member_id == member_id
+        ).first()
+
+        if not member:
+            return None
+
+        db.delete(member)
+        db.commit()
+        return member
+    
+
+    @staticmethod
     def get_by_email(db: Session, email: str):
         """
         Retrieves a member record by its email."""
@@ -41,11 +58,14 @@ class MemberRepository:
             query = query.filter(Member.name.ilike(f"%{search}%"))
         return query.offset(skip).limit(limit).all()
 
+
     @staticmethod
-    def delete(db: Session, member_id: str):
+    @staticmethod
+    def update(db: Session, member_id: str, member_data):
         """
-        Deletes a member record from the database by its ID.
+        Updates an existing member record in the database.
         """
+
         member = db.query(Member).filter(
             Member.member_id == member_id
         ).first()
@@ -53,6 +73,11 @@ class MemberRepository:
         if not member:
             return None
 
-        db.delete(member)
+        for key, value in member_data.dict(exclude_unset=True).items():
+            setattr(member, key, value)
+
         db.commit()
+        db.refresh(member)
+
         return member
+    

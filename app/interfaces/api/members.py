@@ -14,7 +14,7 @@ from app.application.members import (
     update_member,
     delete_member,
 )
-from app.shared.exceptions import MemberNotFoundException
+from app.domain.members.exceptions import MemberNotFoundException
 
 router = APIRouter(
     prefix="/members",
