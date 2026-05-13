@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
+
 class BookCreate(BaseModel):
     """
     Pydantic model for creating a new book record.
