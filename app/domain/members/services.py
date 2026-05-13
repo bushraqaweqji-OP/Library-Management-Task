@@ -1,6 +1,6 @@
 from app.infrastructure.persistence.repositories.sqlalchemy_member_repository import MemberRepository
 from app.infrastructure.security import hash_password
-from app.shared.exceptions import EmailAlreadyExistsException
+from app.domain.auth.exceptions import EmailAlreadyExistsException
 
 
 class MemberService:

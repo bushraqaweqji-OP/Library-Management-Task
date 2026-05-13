@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from app.shared.exceptions import (
+from app.domain.books.exceptions import (
     BookAlreadyBorrowedException,
     BookNotBorrowedException,
     WrongReturnBookException,
@@ -39,7 +39,9 @@ class Book:
             raise BookNotBorrowedException()
 
         if self.borrowed_by != current_member_id:
-            raise WrongReturnBookException()
+            print(self.borrowed_by, type(self.borrowed_by))
+            print(current_member_id, type(current_member_id))
+            # raise WrongReturnBookException()
 
         self.is_borrowed = False
         self.borrowed_by = None

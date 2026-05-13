@@ -11,7 +11,7 @@ from app.application.books import (
     borrow_book,
     return_book,
 )
-from app.shared.exceptions import BookNotFoundException
+from app.domain.books.exceptions import BookNotFoundException
 
 
 router = APIRouter(prefix="/books", tags=["Books"])
